@@ -1,2 +1,2 @@
-# chatzam
-Shazam app excepts it is good
+# chatzam_server
+ChatZam server-side
