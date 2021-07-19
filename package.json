@@ -1,0 +1,29 @@
+{
+  "name": "chatzam_server",
+  "version": "1.0.0",
+  "description": "ChatZam server-side",
+  "main": "curl.js",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "body-parser": "^1.19.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "node-fetch": "^2.6.1",
+    "nodemon": "^2.0.12"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lejugeti/chatzam_server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lejugeti/chatzam_server/issues"
+  },
+  "homepage": "https://github.com/lejugeti/chatzam_server#readme"
+}
