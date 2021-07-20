@@ -15,6 +15,7 @@
     "firebase-admin": "^9.11.0",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
-    "nodemon": "^2.0.12"
+    "nodemon": "^2.0.12",
+    "youtube-dl-exec": "^1.2.4"
   }
 }

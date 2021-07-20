@@ -2,6 +2,12 @@
 /node_modules
 /api/node_modules
 
+# sensible files
 .env
-.vscode
 chatzam-firebase-key.json
+
+# too heavy
+/api/downloads
+
+# useless
+.vscode
