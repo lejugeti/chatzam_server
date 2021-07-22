@@ -1,9 +1,12 @@
 var admin = require("firebase-admin");
+var dotenv = require("dotenv");
+dotenv.config();
 
 class FirebaseService {
   constructor() {
     const keyPath = process.env.GOOGLE_APPLICATION_CREDENTIALS;
     const serviceAccount = require(keyPath);
+
     admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
     });
@@ -29,22 +32,28 @@ class FirebaseService {
   /// add a new video
   /// return a Promise containing the video's DocumentReference
   //
-  async addVideo(addVideoData) {
-    const data = {
-      youtubeId: addVideoData.youtubeId,
-      downloaded: addVideoData.downloaded || false,
-    };
+  addVideo(addVideoData) {
+    return new Promise(async (resolve, reject) => {
+      const date = new Date();
+      const data = {
+        youtubeId: addVideoData.youtubeId,
+        downloaded: addVideoData.downloaded || false,
+        date: date.toLocaleString(),
+      };
 
-    if (data.youtubeId) {
-      const newVidRef = await (
-        await this.db.collection("videos").add(data)
-      ).get();
+      if (data.youtubeId) {
+        const collection = this.db.collection("videos");
+        const newVidRef = await collection.add(data);
+        const newVidSnapshot = await newVidRef.get();
 
-      const newVideo = this.formatDocSnapshot(newVidRef);
-      console.log(`Video added with success ${JSON.stringify(newVideo)}`);
+        const newVideo = this.formatDocSnapshot(newVidSnapshot);
+        console.log(`Video added with success ${JSON.stringify(newVideo)}`);
 
-      return newVideo;
-    }
+        resolve(newVideo);
+      } else {
+        reject(new Error("No youtubeId given"));
+      }
+    });
   }
 
   formatQuerySnapshot(querySnapshot) {
