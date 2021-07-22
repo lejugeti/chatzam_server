@@ -14,6 +14,17 @@ class FirebaseService {
     this.db = admin.firestore();
   }
 
+  async deleteAllVideos() {
+    const videoCollection = await this.db.collection("videos");
+    const snapshot = await videoCollection.get();
+
+    await snapshot.forEach((doc) => {
+      doc.delete();
+    });
+
+    console.log("All videos deleted");
+  }
+
   getVideosNotDownloaded() {
     return new Promise(async (resolve, reject) => {
       this.db
@@ -38,6 +49,8 @@ class FirebaseService {
       const data = {
         youtubeId: addVideoData.youtubeId,
         downloaded: addVideoData.downloaded || false,
+        artist: addVideoData.artist || "",
+        title: addVideoData.title || "",
         date: date.toLocaleString(),
       };
 
@@ -56,6 +69,31 @@ class FirebaseService {
     });
   }
 
+  updateVideo(docId, optionsToUpdate) {
+    return new Promise((resolve, reject) => {
+      var updateData = this.checkUpdateVideoData(optionsToUpdate);
+      var videoRef = this.db.collection("videos").doc(docId);
+
+      videoRef.update(updateData).then(async () => {
+        var videoUpdated = await videoRef.get();
+        console.log({ videoUpdated: videoUpdated.data() });
+        resolve(videoUpdated.data());
+      });
+    });
+  }
+
+  checkIfVideoExists(videoId) {
+    return new Promise(async (resolve, reject) => {
+      var existingVideoRef = await this.db
+        .collection("videos")
+        .where("youtubeId", "==", videoId);
+      var existingVideoSnapshot = await existingVideoRef.get();
+
+      resolve(existingVideoSnapshot.docs.length > 0);
+    });
+  }
+
+  //#region format
   formatQuerySnapshot(querySnapshot) {
     let formated = querySnapshot.docs.map((doc) => {
       var video = doc.data();
@@ -72,6 +110,23 @@ class FirebaseService {
 
     return formated;
   }
+
+  // check and format the data passed to update videos
+  checkUpdateVideoData(data) {
+    var updateData = {};
+
+    for (let [key, value] of Object.entries(data)) {
+      if (this.videoKeys.includes(key)) {
+        updateData[key] = value;
+      }
+    }
+
+    return updateData;
+  }
+  //#endregion
+
+  // keys that are used for video documents
+  videoKeys = ["artist", "youtubeId", "title", "date", "downloaded"];
 }
 
 module.exports = new FirebaseService();

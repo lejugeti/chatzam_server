@@ -2,6 +2,22 @@ const { spawn } = require("child_process");
 const youtubedl = require("youtube-dl-exec");
 
 class ProcessService {
+  launchDownload(videoId) {
+    return new Promise((resolve, reject) => {
+      const url = `https://www.youtube.com/watch?v=${videoId}`;
+
+      var options = {
+        extractAudio: true,
+        audioFormat: "mp3",
+        output: "downloads/%(title)s.%(ext)s",
+      };
+
+      this.downloadMusic(url, options)
+        .then((code) => resolve(code))
+        .catch((error) => reject(error));
+    });
+  }
+
   downloadMusic(url, options) {
     return new Promise((resolve, reject) => {
       youtubedl(url, options)
